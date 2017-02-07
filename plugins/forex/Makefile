@@ -35,7 +35,7 @@ CXXFLAGS += -g  -Wextra -pthread -shared -fPIC
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-PLUGIN = $(SO_DIR)/manager/manager.so
+PLUGIN = $(SO_DIR)/forex/forex.so
 
 INCLUDE_PATHS = -I/usr/local/libmemcached-1.0.7/include \
 				-I$(LIB_DIR)/BasicCore \
@@ -87,15 +87,24 @@ clean :
 # function.
 
 
-manager_init.o : ./manager_init.cc ./manager_init.h
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ./manager_init.cc $(INCLUDE_PATHS)
+forex_init.o : ./forex_init.cc ./forex_init.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ./forex_init.cc $(INCLUDE_PATHS)
 
-manager_logic.o : ./manager_logic.cc ./manager_logic.h
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ./manager_logic.cc $(INCLUDE_PATHS)
+forex_logic.o : ./forex_logic.cc ./forex_logic.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ./forex_logic.cc $(INCLUDE_PATHS)
 
-manager_proto_buf.o : ./manager_proto_buf.cc ./manager_proto_buf.h
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ./manager_proto_buf.cc $(INCLUDE_PATHS)
+forex_redis.o : ./forex_redis.cc ./forex_redis.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ./forex_redis.cc $(INCLUDE_PATHS)
 
+forex_schduler_engine.o : ./forex_schduler_engine.cc ./forex_schduler_engine.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ./forex_schduler_engine.cc $(INCLUDE_PATHS)
+	
+pull_engine.o : ./pull_engine.cc ./pull_engine.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ./pull_engine.cc $(INCLUDE_PATHS)
+	
+sina_pull_engine.o : ./sina_pull_engine.cc ./sina_pull_engine.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ./sina_pull_engine.cc $(INCLUDE_PATHS)
+	
 logic_unit.o :  $(USER_DIR)/logic/logic_unit.cc $(USER_DIR)/logic/logic_unit.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/logic/logic_unit.cc $(INCLUDE_PATHS)
 	
@@ -123,9 +132,10 @@ http_api.o :  $(USER_DIR)/net/http_api.cc $(USER_DIR)/net/http_api.h
 packet_processing.o :  $(USER_DIR)/net/packet_processing.cc $(USER_DIR)/net/packet_processing.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/net/packet_processing.cc $(INCLUDE_PATHS)
 
-
-$(PLUGIN) : manager_init.o  manager_logic.o manager_proto_buf.o logic_unit.o quotations_infos.o\
-	data_engine.o data_mysql_engine.o data_redis_engine.o mysql_pool.o redis_pool.o packet_processing.o\
+$(PLUGIN) : forex_init.o forex_logic.o forex_redis.o forex_schduler_engine.o\
+	pull_engine.o logic_unit.o quotations_infos.o sina_pull_engine.o\
+	redis_pool.o mysql_pool.o data_redis_engine.o data_mysql_engine.o\
+	data_engine.o http_api.o packet_processing.o\
 	$(CUSTOM_THIRD_PATH)/dmg_fp/lib/dmg_fp.a $(LIB_DIR)/mylib/base/lib/mybase.a $(LIB_DIR)/mylib/third_party/lib/libhiredis.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LINK_PATHS) -lpthread -lexpat -lrt -ldl -lmysqlclient \
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(LINK_PATHS) -lpthread -lexpat -lcurl -lrt -ldl -lmysqlclient \
 	$^ -o $@

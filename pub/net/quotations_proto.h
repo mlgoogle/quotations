@@ -1,19 +1,14 @@
-//  Copyright (c) 2015-2015 The quotations Authors. All rights reserved.
-//  Created on: 2017年1月8日 Author: kerry
+//  Copyright (c) 2016-2017 The quotations Authors. All rights reserved.
+//  Created on: 2017年2月6日 Author: kerry
 
-#ifndef QUOTATIONS_GOODS_GOODS_PROTO_BUF_H_
-#define QUOTATIONS_GOODS_GOODS_PROTO_BUF_H_
+#ifndef QUOTATIONS_PUB_QUOTATIONS_PROTO_BUF_H_
+#define QUOTATIONS_PUB_QUOTATIONS_PROTO_BUF_H_
 
 #include "basic/basictypes.h"
 #include "logic/base_values.h"
-#include <list>
-#include <string>
 
-namespace goods_logic {
-namespace net_request {
 
-}
-
+namespace quotations_logic{
 namespace net_reply {
 class RealTime {
  public:
@@ -134,5 +129,6 @@ class RealTime {
 };
 
 }
+
 }
 #endif
